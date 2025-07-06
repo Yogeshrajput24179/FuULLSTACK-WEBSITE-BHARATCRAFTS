@@ -28,7 +28,6 @@ const baseURL = process.env.BASE_URL || `http://localhost:${port}`;
 
 app.use(express.json());
 
-import cors from 'cors';
 
 const allowedOrigins = [
   "http://localhost:5173",
