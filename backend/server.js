@@ -23,13 +23,19 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const port = process.env.PORT || 8282;
 
+// Use the BASE_URL env variable, fallback to localhost
+const baseURL = process.env.BASE_URL || `http://localhost:${port}`;
+
 app.use(express.json());
 app.use(cors({
-  origin: ["http://localhost:5173", "http://localhost:5174", "http://localhost:5175"],
+  origin: [
+    "http://localhost:5173",
+    "http://localhost:5174",
+    "https://fuullstack-website-bharatcrafts.onrender.com",
+  ],
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
-  credentials: true
+  credentials: true,
 }));
-
 
 // Database Connection
 connectDB()
@@ -42,7 +48,6 @@ connectDB()
 // Serve Static Images (Ensure `uploads` folder exists)
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
-
 app.use("/api/products", productRouter);
 app.use("/api/user", userRouter);
 app.use("/api/cart", cartRouter);
@@ -53,11 +58,11 @@ app.get("/api/products/list", async (req, res) => {
   try {
     const products = await productModel.find().lean();
     const updatedProducts = products.map((product) => ({
-      id: product._id.toString(), // Convert `_id` to string
+      id: product._id.toString(),
       name: product.name,
       price: product.price,
       description: product.description,
-      image: product.image ? `http://localhost:${port}/uploads/${product.image}` : null,
+      image: product.image ? `${baseURL}/uploads/${product.image}` : null,
     }));
 
     res.json({ success: true, data: updatedProducts });
@@ -84,11 +89,10 @@ app.get("/api/cart", authMiddleware, async (req, res) => {
   }
 });
 
-
 // Place Order API (Protected Route)
-
+// ... your existing order API code here ...
 
 // Start Server After MongoDB Connects
 app.listen(port, () => {
-  console.log(`🚀 Server started on http://localhost:${port}`);
+  console.log(`🚀 Server started on ${baseURL}`);
 });
