@@ -27,15 +27,18 @@ const port = process.env.PORT || 8282;
 const baseURL = process.env.BASE_URL || `http://localhost:${port}`;
 
 app.use(express.json());
+
 app.use(cors({
   origin: [
     "http://localhost:5173",
     "http://localhost:5174",
     "https://fuullstack-website-bharatcrafts.onrender.com",
+    "https://yogeshrajput24179.github.io"  // Add this line
   ],
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
   credentials: true,
 }));
+
 
 // Database Connection
 connectDB()
